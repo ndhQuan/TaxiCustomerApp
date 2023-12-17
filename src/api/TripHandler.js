@@ -41,3 +41,21 @@ export async function updateJourneyState(token, id, path, value) {
     console.log(error);
   }
 }
+
+export async function getJourneyLog(token, id) {
+  try {
+    const res = await axios({
+      method: "GET",
+      url: `${BASEAPI_URL}/api/Journey?id=${id}&isCustomer=true`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.status === 200) {
+      return res.data.result;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}

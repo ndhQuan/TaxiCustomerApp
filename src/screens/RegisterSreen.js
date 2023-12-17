@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -14,15 +14,32 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 import CustomButton from "../components/CustomButton";
+import { signUp } from "../api/Auth";
 
 const RegisterScreen = ({ navigation }) => {
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [dobLabel, setDobLabel] = useState("Date of Birth");
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [visibleError, setVisibleError] = useState(false);
+  const confirmPassword = useRef();
+
+  async function registerHandler() {
+    if (confirmPassword.current != password) {
+      setVisibleError(true);
+      return;
+    }
+    await signUp(name, email, phoneNumber, password);
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-      <View style={{ paddingHorizontal: 25 }}>
+      <View
+        style={{
+          paddingHorizontal: 25,
+          paddingVertical: 100,
+        }}
+      >
         <Text
           style={{
             fontSize: 28,
@@ -44,6 +61,8 @@ const RegisterScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
+          value={name}
+          onChangeText={(enteredName) => setName(enteredName)}
         />
 
         <InputField
@@ -56,7 +75,23 @@ const RegisterScreen = ({ navigation }) => {
               style={{ marginRight: 5 }}
             />
           }
-          keyboardType="number"
+          keyboardType="number-pad"
+          value={phoneNumber}
+          onChangeText={(enteredPhone) => setPhoneNumber(enteredPhone)}
+        />
+
+        <InputField
+          label={"Email"}
+          icon={
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color="#666"
+              style={{ marginRight: 5 }}
+            />
+          }
+          value={email}
+          onChangeText={(enteredEmail) => setEmail(enteredEmail)}
         />
 
         <InputField
@@ -70,6 +105,8 @@ const RegisterScreen = ({ navigation }) => {
             />
           }
           inputType="password"
+          value={password}
+          onChangeText={(enteredPass) => setPassword(enteredPass)}
         />
 
         <InputField
@@ -83,9 +120,15 @@ const RegisterScreen = ({ navigation }) => {
             />
           }
           inputType="password"
+          value={confirmPassword.current}
+          onChangeText={(enteredConfirm) =>
+            (confirmPassword.current = enteredConfirm)
+          }
         />
-
-        <CustomButton label={"Register"} onPress={() => {}} />
+        <Text style={{ display: visibleError ? "flex" : "none", color: "red" }}>
+          ConfirmPassword not matched
+        </Text>
+        <CustomButton label={"Register"} onPress={registerHandler} />
 
         <View
           style={{

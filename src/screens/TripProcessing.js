@@ -16,7 +16,6 @@ export default function TripProcessing({ navigation, route }) {
     route.params;
 
   const [connection, setConnection] = useState(null);
-  const [initialRegion, setInitialRegion] = useState();
   const [driverInfo, setDriverInfo] = useState();
   const [driverCoords, setDriverCoords] = useState();
   const [isPickedUp, setIsPickedUp] = useState(false);
@@ -59,8 +58,6 @@ export default function TripProcessing({ navigation, route }) {
         endLng,
         taxiTypeId
       );
-      console.log("sendRequest");
-      console.log(authCtx.userToken);
       connection.on(
         "ReceivedDriverInfo",
         function (name, phoneNumber, licensePlate) {
@@ -69,7 +66,6 @@ export default function TripProcessing({ navigation, route }) {
             phoneNumber,
             licensePlate,
           });
-          console.log("setDriver");
         }
       );
 
@@ -102,15 +98,22 @@ export default function TripProcessing({ navigation, route }) {
           lat,
           lng,
         });
-        console.log("setDriver");
       });
 
       connection.on("ReceivedPickedupNotification", function () {
         setPolyCoords(guestToEnd);
         setIsPickedUp(true);
       });
+      connection.on("ReceivedFinishNotification", function () {
+        if (driverInfo) {
+          navigation.navigate("Finish", {
+            driverName: driverInfo.name,
+            licensePlate: driverInfo.licensePlate,
+          });
+        }
+      });
     }
-  }, [connection]);
+  }, [connection, driverInfo]);
 
   useEffect(() => {
     if (driverInfo && !isPickedUp) {
@@ -119,8 +122,6 @@ export default function TripProcessing({ navigation, route }) {
       mapRef.current.animateToRegion(calculateInitialRegion(polyCoords), 2000);
     }
   }, [driverInfo, isPickedUp]);
-
-  console.log(driverCoords, "coords");
 
   function pressHandler() {
     setNotFoundDriver(false);
@@ -132,12 +133,25 @@ export default function TripProcessing({ navigation, route }) {
       {!driverInfo && (
         <View style={styles.waitingInfoContainer}>
           {notFoundDriver && (
-            <View>
-              <Text style={{ textAlign: "center", fontWeight: "bold" }}>
-                Hiện tại không tìm thấy xe phù hợp theo yêu cầu. Xin quý khách
-                thông cảm và quay lại sau ít phút.
-              </Text>
-              <CustomButton label={"OK"} onPress={pressHandler} />
+            <View
+              style={{ justifyContent: "space-around", alignItems: "center" }}
+            >
+              <View>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: 18,
+                    padding: 20,
+                  }}
+                >
+                  Hiện tại không tìm thấy xe phù hợp theo yêu cầu. Xin quý khách
+                  thông cảm và quay lại sau ít phút.
+                </Text>
+              </View>
+              <View style={{ width: "90%" }}>
+                <CustomButton label={"OK"} onPress={pressHandler} />
+              </View>
             </View>
           )}
           {!notFoundDriver && (

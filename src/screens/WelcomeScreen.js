@@ -1,4 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  
+} from "react-native";
 import CustomButton from "../components/CustomButton";
 import Button from "../components/Button";
 import { useEffect } from "react";
@@ -27,14 +33,16 @@ export default function WelcomeScreen({ navigation }) {
       <View style={styles.feature}>
         <Button android_ripple={{ color: "#ccc" }} onPress={onBookingHandler}>
           <View>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Đặt xe</Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold", color: "white" }}>
+              Đặt xe
+            </Text>
           </View>
         </Button>
-        <Button android_ripple={{ color: "#ccc" }} style={{ flex: 1 }}>
+        {/* <Button android_ripple={{ color: "#ccc" }} style={{ flex: 1 }}>
           <View>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>Tài khoản</Text>
           </View>
-        </Button>
+        </Button> */}
       </View>
     </View>
   );

@@ -10,6 +10,7 @@ import {
   Modal as OriginalModal,
   Button,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { PaperProvider } from "react-native-paper";
 import { useLayoutEffect, useEffect, useState, useContext } from "react";
@@ -38,12 +39,11 @@ export default function GetLocation({ navigation }) {
     longitudeDelta: 0.04497,
   });
   const authCtx = useContext(AuthContext);
-  console.log(authCtx.userId, "authctx");
 
   function InitialScreen() {
     return (
       <PaperProvider>
-        {/* <InfoModal>
+        <InfoModal>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <ActivityIndicator />
             <Text
@@ -57,7 +57,7 @@ export default function GetLocation({ navigation }) {
               Đang tìm vị trí của bạn
             </Text>
           </View>
-        </InfoModal> */}
+        </InfoModal>
         <Map region={initialRegion} />
       </PaperProvider>
     );
@@ -87,8 +87,8 @@ export default function GetLocation({ navigation }) {
       }
 
       let location = await Location.getCurrentPositionAsync({
-        enableHighAccuracy: true,
-        accuracy: Location.Accuracy.High,
+        // enableHighAccuracy: true,
+        // accuracy: Location.Accuracy.High,
       });
       console.log(location, "location");
       const newIniRegion = calculateInitialRegion(
@@ -101,8 +101,6 @@ export default function GetLocation({ navigation }) {
           true
         )
       );
-      console.log(newIniRegion, "new");
-      console.log(initialRegion, "ini");
 
       setCurrentLocation({
         lat: location.coords.latitude,
@@ -113,8 +111,6 @@ export default function GetLocation({ navigation }) {
     return () => clearTimeout(findCoord);
     // getCurrentCoord();
   }, []);
-
-  console.log(currentLocation, "current");
 
   if (!currentLocation && permission) {
     return <InitialScreen></InitialScreen>;

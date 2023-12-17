@@ -61,7 +61,6 @@ export default function Booking({ navigation, route }) {
           if (taxiTypeList.length > 0) {
             setTaxiTypeList(taxiTypeList);
           }
-          console.log(taxiTypeList);
         } catch {
           console.log("asp.net error");
         }
@@ -117,6 +116,7 @@ export default function Booking({ navigation, route }) {
       endLat: 10.8165899,
       endLng: 106.6650496,
       taxiTypeId: selectedId,
+      distance: 5200,
     });
   }
 
